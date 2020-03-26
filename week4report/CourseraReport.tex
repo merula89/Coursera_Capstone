@@ -26,24 +26,22 @@
 	\end{abstract}
 	
 	\section{Introduction}
-	Suicide is a sad way of ending a life that could have been full of joy and love. It is of great interest to me to find out what drives a person to kill himself and I found a good data source for a lot of suicides over the last decades. 
+	In the previous examples, we looked at comparing neighbourhoods from Toronto or New York. Big cities with huge skyscrapers and god knows, those are beautiful places to live. But what about the districts in southern Germany, where I come from. I want to apply the lessons learned in a more rural context. Which districts are similar, which districts have most inhabitants and so on. 
+	
+	As there is a need for a direct problem statement, I will try to find a good place to build a fitness centre. 
 	
 	\section{Problem Statement}
 
-	First, I will just look into the data set and filter it by its columns. For example, do more men or women commit suicide? How many woman from Germany which are seen as coming from the Generation X and why so many or why so few. \\
-	
-	The approach, I want to take with this data is different to the ones taken before on this data set. I want to predict a living person's probability to have committed suicide in the past, based on a user input for the data. \\
+	Imagine, you want to invest in a fitness centre but you are not sure, where to start it. There are lots of different variables 
 
 	
-	\section{Approach}
-	
-	 I am right now not entirely sure which algorithm I want to use for this. As the data set is large, I will reduce it to one country only (as the user later is asked to input, where he or she comes from) . Based on this data set, I will explore it a bit with different clustering and regression techniques.
-	 
-	 
-	 
 	\section{Data used} \label{documentclasses}
 	
-	The suicide data is taken from kaggle \href{https://www.kaggle.com/russellyates88/suicide-rates-overview-1985-to-2016}{\nolinkurl{here}}. 
+	The suicide data is taken from \href{http://opendatalab.de/projects/geojson-utilities/}}. There I selected the districts around me and exported the json file. It will give access to a lot of information useful as a starting point. \\
+
+	First I will import the geojson file into a dataframe and extract the features I am interested in, namely the descriptive name and location of the district. This information is then used to get venues via foursquare. \\ 
+	
+
 	
 
 %	\begin{itemize}
