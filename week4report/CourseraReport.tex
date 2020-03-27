@@ -22,58 +22,167 @@
 	
 	
 	\begin{abstract}
-		Later there will be an abstract here
+		In the final capstone project of the coursera course "Applied Data Science Capstone", I will research the rural areas around my location: Oberschwaben, Germany. The focus is (randomly) on different gas station brands which are represented in this area. A particular research question is: As a CEO of one of the gas station brands, where would you open your next gas station just based on the competition. Where are low density communities where your brand is not present yet. This and other interesting findings where the outcome of the capstone project
 	\end{abstract}
 	
 	\section{Introduction}
-	In the previous examples, we looked at comparing neighbourhoods from Toronto or New York. Big cities with huge skyscrapers and god knows, those are beautiful places to live. But what about the districts in southern Germany, where I come from. I want to apply the lessons learned in a more rural context. Which districts are similar, which districts have most inhabitants and so on. 
+	In the previous examples, we looked at comparing neighbourhoods from Toronto or New York. Big cities with huge skyscrapers and god knows, those are beautiful places to live. But what about the districts in southern Germany, where I come from. Have a look, what I am talking about in Fig. \ref{fig:obs} and \ref{fig:obsMap}:
 	
-	As there is a need for a direct problem statement, I will try to find a good place to build a fitness centre. 
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{imgaes/obs}
+		\caption{Landscape of Oberschwaben, Germany.}
+		\label{fig:obs}
+	\end{figure}
+	
+		\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{imgaes/obs_loc.png}
+		\caption{Map of Oberschwaben, Germany.}
+		\label{fig:obsMap}
+	\end{figure}
+	
+	I want to apply the lessons learned in a more rural context. Which districts are similar, which districts have most inhabitants and so on. Instead of neighbourhoods I am interested in districts and communities. So area-wise its a larger scale and we have to deal with the lack of data. 
+	
+	Germany is divided into several states which have state government as well. Those states have districts and those districts then have communities. For four districts around my location and 132 communities I want to analyse the following problem statement
+	
+
 	
 	\section{Problem Statement}
 
-	Imagine, you want to invest in a fitness centre but you are not sure, where to start it. There are lots of different variables 
+	Imagine, you want to invest in a gas station but you are not sure, where to start it. There are lots of different variables to take into account. As it will be a franchise, you will open a gas station of a popular brand, like Aral (https://www.aral.de/) or Esso (https://www.esso.de/). Now, you have the data about the communities (where they are located) and with the foursquare API you can get all the gas stations for each community. You want to find out, where which gas station dominates the community and therefore, where it would be interesting for you, to start your own gas station. 
 
 	
-	\section{Data used} \label{documentclasses}
+	\section{Data used}
 	
-	The suicide data is taken from \href{http://opendatalab.de/projects/geojson-utilities/}}. There I selected the districts around me and exported the json file. It will give access to a lot of information useful as a starting point. \\
+	First I will import the geojson file into a dataframe and extract the features I am interested in, namely the descriptive name and location of the district. This information is then used to get venues via foursquare.
+	
+	Let me visualize this for you, the data used is listed below:
+	
+	\begin{itemize}
+		\item GEO JSON File for the districts: Fig. \ref{fig:districts}, small File
+		\item GEO JSON File for the communities: Fig. \ref{fig:communities}, larger File (but still very compact) 
+	\end{itemize} 
 
-	First I will import the geojson file into a dataframe and extract the features I am interested in, namely the descriptive name and location of the district. This information is then used to get venues via foursquare. \\ 
-	
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\linewidth]{imgaes/districts}
+	\caption{Districts, we will take a look at}
+	\label{fig:districts}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\linewidth]{imgaes/communities}
+	\caption{Communities, we will take a look at}
+	\label{fig:communities}
+\end{figure}
+
 
 	
 
-%	\begin{itemize}
-%		\item article
-%		\item book 
-%		\item report 
-%		\item letter 
-%	\end{itemize}
+	\section{Data Acquisition, Data Cleaning and Feature Selection}
+	
+	\subsection{Data Acquisition and Data Cleaning}
+	
+	The data was rather simple and straight forward. Nevertheless, data cleaning was necessary and two problems where dealt with:
+	
+	\begin{itemize}
+		\item "," vs. "." - So Germans like to put the decimal point as a "," which is rather unsatisfying, as numpy cannot deal with it straight away. So the "," is replaced by "." 
+		\item encoding issues. Also a German thing. Those ä,ö,ü,ß and so on are only recognized correctly, if you enable the utf-8 encoding, which I did.
+	\end{itemize}
+	
+	Not a problem directly, but also required some work: The two jsons have to be merged or better: mapped. There is (thank god) a common identifier, which can be used, called "properties.NUTS". I don't even know what it stands for, but it drove me nuts until I found that pretty function: map(). So it was easy to include the district information in the dataframe from the community json file.
 	
 	
-%	\begin{enumerate}
-%		\item article
-%		\item book 
-%		\item report 
-%		\item letter 
-%	\end{enumerate}
-%	
-%	\begin{description}
-%		\item[article\label{article}]{Article is \ldots}
-%		\item[book\label{book}]{The book class \ldots}
-%		\item[report\label{report}]{Report gives you \ldots}
-%		\item[letter\label{letter}]{If you want to write a letter.}
-%	\end{description}
-%	
-%	
-%	\section{Conclusions}\label{conclusions}
-%	There is no longer \LaTeX{} example which was written by \cite{doe}.
-%	
-%	
-%	\begin{thebibliography}{9}
-%		\bibitem[Doe]{doe} \emph{First and last \LaTeX{} example.},
-%		John Doe 50 B.C. 
-%	\end{thebibliography}
+	\subsection{Feature selection}
+	The seletion of features was easy. I wanted the district's name, the communitie's name, the coordinates (latitude and longitude), the population data (as for future use, did not use it in this study) and the geometry coordinates of the polygon defining the community (also future use).
+	
+	I checked the data frame for nan values (which of none where found). 
+	
+	\section{Exploratory Data Analysis}
+	
+	\subsection{Maps of the gas stations}
+	What first comes to mind is a map, so I plotted a folium map of the different communities (Fig. \ref{fig:map0}):
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{imgaes/map0}
+		\caption{First map plotted in the python notebook containing the community markers which where imported}
+		\label{fig:map0}
+	\end{figure}
+	
+	Using foursquare I was able to get the venues (here: gas stations) around each community coordinate within a specific radius. Unfortunately I found no way to get foursquare to just use all hits within the polygon. There is a polygon selection option with foursquare, but it must have no more than 15 points. So I went with the radius option instead, knowing, that I have to deal with duplicates later on.
+	
+	Next, as there are a lot of different brands for a gas station, I decided to include only the top brands, which are in this case: "esso", "agip", "ran", "avia", "bft", "shell", "sb","omv","aral","agip". And please don't hit on me, if I forgot any major brand here. 
+	
+	Here, another round of data cleaning became necessary. As the title of the venue may differ and even include the community name like "Aral Bad Wurzach" where Aral is the brand and Bad Wurzach is the community. To overcome this problem, I lowercased the title, and replaced it with one of the major brand if this major brand was found in the title. 
+	
+	In total there where 100 gas stations in this area. I also plotted them on a map (Fig. \ref{fig:gasstations}):
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{imgaes/gasStations}
+		\caption{Gas Stations}
+		\label{fig:gasstations}
+	\end{figure}
+
+	As you can see, there are less gas stations than communities. So I expect some communities to 
+	drop. In fact only 40 communities have gas stations. 
+	
+	
+	\subsection{Dominating Gas Station}
+	
+	Via onehot encoding and grouping by community I am able to get the frequency of each gas station brand within each community. 
+	As I wanted to plot the top3 gas station brands of each community, I ran into another problem: Many dont even have 3 different gas stations. Welcome to the rural area! So I adapted the functions to deliver NAN values for 0 values. NAN are ignored, so only the top max(3) existing brands are returned and plotted. 
+	
+	Lets see which brand is represented most within our communities (Fig. \ref{fig:gs1st}):
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{imgaes/gs_1st}
+%		\includegraphics[width=0.7\linewidth]{imgaes/gs_2nd}
+%		\includegraphics[width=0.7\linewidth]{imgaes/gs_3rd}
+		\caption{Which brand dominates most communities}
+		\label{fig:gs1st}
+	\end{figure}
+
+
+	In the notebook, there are also the charts for the second most and third most common brand over all communities. 
+	
+	
+	\subsection{Clustering based on the frequency table}
+	The frequency of each brand within each community can also be used for a k-means clustering approach. The result is displayed in Fig. \ref{fig:clustering1}.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{imgaes/clustering1.jpg}
+		\caption{Clustering result with k =7}
+		\label{fig:clustering1}
+	\end{figure}
+	
+	In order to see if it correlates with the dominating gas station brand, a second map with different colours is plotted in Fig. \ref{fig:clustering2}.
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{imgaes/clustering1.jpg}
+		\caption{Clustering result with k =7 and dominating gas station brand}
+		\label{fig:clustering2}
+	\end{figure}
+	
+	
+	\section{Conclusion}
+	The battle for gas continued in the suburban areas of Oberschwaben, Germany. We looked at different gas station brands like Aral, Esso and so forth. Using data science, I was able to get insight in where which brand dominated a community. 
+	
+	But why?  
+	First of all let's say you are the Aral CEO and want to find out where to open your next gas station. This approach here can help identify where low density areas are and therefore, where it makes sense to open up a new gas station. Of course this can only be a starting point. You would have to include traffic and population as well. I will maybe enhance this in the future because I really liked working on it. 
+	
+	Now what are the next steps: 
+	First, the population data is availabe in this data set. To include this data would be straight forward. Traffic is not so easy and requires further research. As this was just a two week's project, I am quite happy with the results. 
+	
+	Thank you for your time and your interest.
+	
+	May the force be with you :-D
+	
 	
 \end{document}
